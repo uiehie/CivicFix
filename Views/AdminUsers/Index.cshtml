@@ -1,0 +1,93 @@
+@model CivicFix.Models.AdminUsersViewModel
+
+@{
+    ViewData["Title"] = "Administradores";
+}
+
+<section class="page-heading">
+    <div>
+        <p class="eyebrow">Control de acceso <span class="eyebrow-dot"></span> Administración</p>
+        <h1>Administradores</h1>
+        <p class="heading-date">Busca cuentas registradas y asígnales acceso al panel.</p>
+    </div>
+</section>
+
+@if (TempData["AdminUsersSuccess"] is string successMessage)
+{
+    <div class="admin-users-message admin-users-message--success" role="status">@successMessage</div>
+}
+@if (TempData["AdminUsersError"] is string errorMessage)
+{
+    <div class="admin-users-message admin-users-message--error" role="alert">@errorMessage</div>
+}
+
+<section class="reports-panel admin-users-panel" aria-labelledby="admin-users-title">
+    <div class="panel-heading">
+        <div class="panel-title-block">
+            <div class="panel-title-row">
+                <h2 id="admin-users-title">Cuentas registradas</h2>
+                <span class="result-count">@Model.Users.Count</span>
+            </div>
+            <p>Para agregar una persona, primero debe crear su cuenta ciudadana.</p>
+        </div>
+    </div>
+
+    <form class="filter-bar" asp-controller="AdminUsers" asp-action="Index" method="get">
+        <label class="filter-search">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.5"/><path d="m16 16 4.5 4.5"/></svg>
+            <input type="search" name="busqueda" value="@Model.SearchTerm" placeholder="Buscar por nombre o correo" aria-label="Buscar cuentas por nombre o correo" />
+        </label>
+        <button class="button button--filter" type="submit">Buscar</button>
+    </form>
+
+    <div class="table-wrap">
+        <table class="report-table admin-users-table">
+            <thead>
+                <tr>
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Correo</th>
+                    <th scope="col">Acceso</th>
+                    <th scope="col"><span class="sr-only">Acciones</span></th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Users.Count == 0)
+                {
+                    <tr>
+                        <td colspan="4" class="empty-state">
+                            @(string.IsNullOrWhiteSpace(Model.SearchTerm)
+                                ? "Todavía no hay cuentas registradas."
+                                : "No se encontraron cuentas con ese nombre o correo.")
+                        </td>
+                    </tr>
+                }
+                @foreach (var account in Model.Users)
+                {
+                    <tr>
+                        <td>@account.FullName</td>
+                        <td>@account.Email</td>
+                        <td>
+                            <span class="admin-role-tag @(account.IsAdmin ? "admin-role-tag--admin" : "")">
+                                @(account.IsAdmin ? "Administrador" : "Ciudadano")
+                            </span>
+                        </td>
+                        <td class="admin-users-action">
+                            @if (!account.IsAdmin)
+                            {
+                                <form asp-controller="AdminUsers" asp-action="Promote" method="post">
+                                    <input type="hidden" name="userId" value="@account.Id" />
+                                    <input type="hidden" name="busqueda" value="@Model.SearchTerm" />
+                                    <button class="button button--primary" type="submit">Dar acceso Admin</button>
+                                </form>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="table-caption">
+        <span>Solo las cuentas con acceso Admin pueden entrar al panel de gestión.</span>
+    </div>
+</section>

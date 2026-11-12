@@ -1,12 +1,18 @@
 using System.Security.Cryptography;
 using CivicFix.Data;
 using CivicFix.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace CivicFix.Controllers;
 
-public sealed class ReportsController(CivicFixContext database, IWebHostEnvironment environment) : Controller
+[Authorize]
+public sealed class ReportsController(
+    CivicFixContext database,
+    IWebHostEnvironment environment,
+    UserManager<AppUser> userManager) : Controller
 {
     private static readonly string[] Categories = ["Alumbrado", "Agua", "Limpieza", "Parques", "Vialidad", "Otro"];
     private static readonly IReadOnlyDictionary<string, string> ImageTypes = new Dictionary<string, string>
@@ -27,6 +33,12 @@ public sealed class ReportsController(CivicFixContext database, IWebHostEnvironm
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(CreateReportViewModel model)
     {
+        var citizen = await userManager.GetUserAsync(User);
+        if (citizen is null)
+        {
+            return Challenge();
+        }
+
         if (!Categories.Contains(model.Category))
         {
             ModelState.AddModelError(nameof(model.Category), "Elige una categoría válida.");
@@ -71,7 +83,8 @@ public sealed class ReportsController(CivicFixContext database, IWebHostEnvironm
             Location = model.Location.Trim(),
             Priority = model.Priority,
             Description = model.Description.Trim(),
-            CitizenName = model.CitizenName.Trim(),
+            CitizenName = citizen.FullName,
+            CitizenUserId = citizen.Id,
             Latitude = model.Latitude,
             Longitude = model.Longitude,
             PhotoPath = photoPath,
@@ -90,6 +103,29 @@ public sealed class ReportsController(CivicFixContext database, IWebHostEnvironm
         if (string.IsNullOrWhiteSpace(folio))
         {
             return RedirectToAction(nameof(Create));
+        }
+
+        var report = await database.Reports.AsNoTracking()
+            .Where(item => item.Folio == folio)
+            .Select(item => new { item.CitizenUserId })
+            .FirstOrDefaultAsync();
+        if (report is null)
+        {
+            return NotFound();
+        }
+
+        if (!User.IsInRole(CivicFixRoles.Admin))
+        {
+            var citizen = await userManager.GetUserAsync(User);
+            if (citizen is null)
+            {
+                return Challenge();
+            }
+
+            if (report.CitizenUserId != citizen.Id)
+            {
+                return Forbid();
+            }
         }
 
         ViewData["ReportCount"] = await database.Reports.CountAsync();

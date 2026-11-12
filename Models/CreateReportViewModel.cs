@@ -4,11 +4,6 @@ namespace CivicFix.Models;
 
 public sealed class CreateReportViewModel
 {
-    [Required(ErrorMessage = "Escribe tu nombre.")]
-    [StringLength(120)]
-    [Display(Name = "Nombre")]
-    public string CitizenName { get; set; } = string.Empty;
-
     [Required(ErrorMessage = "Elige una categoría.")]
     [Display(Name = "Categoría")]
     public string Category { get; set; } = string.Empty;

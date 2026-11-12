@@ -1,0 +1,29 @@
+@model CivicFix.Models.LoginViewModel
+
+@{
+    Layout = "_AccountLayout";
+    ViewData["Title"] = "Iniciar sesión";
+}
+
+<section class="account-card">
+    <p class="eyebrow">Bienvenido a CivicFix</p>
+    <h1>Iniciar sesión</h1>
+    <p class="account-intro">Accede para reportar un problema o gestionar los reportes ciudadanos.</p>
+    <form asp-action="Login" method="post" class="account-form">
+        <div asp-validation-summary="ModelOnly" class="validation-summary"></div>
+        <input asp-for="ReturnUrl" type="hidden" />
+        <div class="field">
+            <label asp-for="Email"></label>
+            <input asp-for="Email" autocomplete="username" placeholder="tu@correo.com" />
+            <span asp-validation-for="Email" class="field-error"></span>
+        </div>
+        <div class="field">
+            <label asp-for="Password"></label>
+            <input asp-for="Password" autocomplete="current-password" />
+            <span asp-validation-for="Password" class="field-error"></span>
+        </div>
+        <label class="remember-option"><input asp-for="RememberMe" /> <span>Mantener sesión iniciada</span></label>
+        <button class="button button--primary account-submit" type="submit">Entrar</button>
+    </form>
+    <p class="account-switch">¿No tienes cuenta? <a asp-action="Register">Regístrate</a></p>
+</section>

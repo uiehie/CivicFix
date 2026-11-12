@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#202a3a" />
+    <title>@ViewData["Title"] · CivicFix</title>
+    <link rel="icon" type="image/png" href="~/images/civicfix-mark.png" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body class="account-page">
+    <main class="account-shell">
+        <a class="account-brand" asp-controller="Account" asp-action="Login">
+            <img src="~/images/civicfix-logo.png" asp-append-version="true" alt="CivicFix" />
+        </a>
+        @RenderBody()
+        <footer class="account-footer">CivicFix · Gestión de servicios urbanos</footer>
+    </main>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

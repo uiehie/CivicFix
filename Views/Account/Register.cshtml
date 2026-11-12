@@ -1,0 +1,38 @@
+@model CivicFix.Models.RegisterViewModel
+
+@{
+    Layout = "_AccountLayout";
+    ViewData["Title"] = "Crear cuenta";
+}
+
+<section class="account-card">
+    <p class="eyebrow">Atención ciudadana</p>
+    <h1>Crear cuenta</h1>
+    <p class="account-intro">Regístrate para enviar reportes con su ubicación y dar seguimiento.</p>
+    <form asp-action="Register" method="post" class="account-form">
+        <div asp-validation-summary="ModelOnly" class="validation-summary"></div>
+        <div class="field">
+            <label asp-for="FullName"></label>
+            <input asp-for="FullName" autocomplete="name" />
+            <span asp-validation-for="FullName" class="field-error"></span>
+        </div>
+        <div class="field">
+            <label asp-for="Email"></label>
+            <input asp-for="Email" autocomplete="email" placeholder="tu@correo.com" />
+            <span asp-validation-for="Email" class="field-error"></span>
+        </div>
+        <div class="field">
+            <label asp-for="Password"></label>
+            <input asp-for="Password" autocomplete="new-password" />
+            <span class="field-hint">Mínimo 8 caracteres, con mayúscula, minúscula, número y símbolo.</span>
+            <span asp-validation-for="Password" class="field-error"></span>
+        </div>
+        <div class="field">
+            <label asp-for="ConfirmPassword"></label>
+            <input asp-for="ConfirmPassword" autocomplete="new-password" />
+            <span asp-validation-for="ConfirmPassword" class="field-error"></span>
+        </div>
+        <button class="button button--primary account-submit" type="submit">Crear cuenta</button>
+    </form>
+    <p class="account-switch">¿Ya tienes cuenta? <a asp-action="Login">Inicia sesión</a></p>
+</section>

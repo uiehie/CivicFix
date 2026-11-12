@@ -12,5 +12,12 @@
     <h1>Reporte recibido</h1>
     <p>Tu folio quedó registrado y está pendiente de revisión.</p>
     <div class="confirmation-folio"><span>Folio de seguimiento</span><strong>@Model</strong></div>
-    <a class="button button--primary" asp-controller="Home" asp-action="Index">Ir al panel</a>
+    @if (User.IsInRole(CivicFixRoles.Admin))
+    {
+        <a class="button button--primary" asp-controller="Home" asp-action="Index">Ir al panel</a>
+    }
+    else
+    {
+        <a class="button button--primary" asp-controller="Reports" asp-action="Create">Crear otro reporte</a>
+    }
 </section>

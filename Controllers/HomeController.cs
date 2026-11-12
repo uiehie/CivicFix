@@ -2,11 +2,13 @@ using System.Diagnostics;
 using System.Text;
 using CivicFix.Data;
 using CivicFix.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace CivicFix.Controllers;
 
+[Authorize(Roles = CivicFixRoles.Admin)]
 public sealed class HomeController(CivicFixContext database) : Controller
 {
     public async Task<IActionResult> Index(string? estado, string? categoria, string? busqueda)
@@ -125,6 +127,7 @@ public sealed class HomeController(CivicFixContext database) : Controller
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+    [AllowAnonymous]
     public IActionResult Error() => View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
 
     private static string EscapeCsv(string value) => $"\"{value.Replace("\"", "\"\"")}\"";

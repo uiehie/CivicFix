@@ -1,0 +1,11 @@
+@{
+    Layout = "_AccountLayout";
+    ViewData["Title"] = "Acceso restringido";
+}
+
+<section class="account-card">
+    <p class="eyebrow">Permisos de cuenta</p>
+    <h1>Acceso restringido</h1>
+    <p class="account-intro">Esta sección es exclusiva para administradores. Como ciudadano, puedes enviar reportes con su ubicación.</p>
+    <a class="button button--primary account-submit" asp-controller="Reports" asp-action="Create">Ir a reportar un problema</a>
+</section>

@@ -10,7 +10,10 @@
         <h1>Reportar un problema</h1>
         <p class="heading-date">Describe el servicio urbano que necesita atención.</p>
     </div>
-    <a class="button button--quiet" asp-controller="Home" asp-action="Index">Volver al panel</a>
+    @if (User.IsInRole(CivicFixRoles.Admin))
+    {
+        <a class="button button--quiet" asp-controller="Home" asp-action="Index">Volver al panel</a>
+    }
 </section>
 
 <section class="form-panel">
@@ -22,11 +25,6 @@
     <form asp-action="Create" method="post" enctype="multipart/form-data" class="report-form">
         <div asp-validation-summary="ModelOnly" class="validation-summary"></div>
         <div class="form-grid">
-            <div class="field field--wide">
-                <label asp-for="CitizenName"></label>
-                <input asp-for="CitizenName" autocomplete="name" placeholder="Nombre de quien reporta" />
-                <span asp-validation-for="CitizenName" class="field-error"></span>
-            </div>
             <div class="field">
                 <label asp-for="Category"></label>
                 <select asp-for="Category">
@@ -80,7 +78,7 @@
             </div>
         </div>
         <div class="form-actions">
-            <a class="button button--quiet" asp-controller="Home" asp-action="Index">Cancelar</a>
+            <button class="button button--quiet" type="reset">Limpiar formulario</button>
             <button class="button button--primary" type="submit">Enviar reporte <span aria-hidden="true">→</span></button>
         </div>
     </form>

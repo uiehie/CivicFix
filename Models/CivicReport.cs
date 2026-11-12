@@ -10,6 +10,7 @@ public sealed class CivicReport
     public string Status { get; set; } = "Pendiente";
     public string Description { get; set; } = string.Empty;
     public string CitizenName { get; set; } = string.Empty;
+    public string? CitizenUserId { get; set; }
     public string? Crew { get; set; }
     public string? PhotoPath { get; set; }
     public double? Latitude { get; set; }
